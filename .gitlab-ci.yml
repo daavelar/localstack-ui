@@ -1,0 +1,24 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+stages:
+  - build_and_deploy
+
+before_script:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+
+build_and_deploy:
+  stage: build_and_deploy
+  script:
+    - docker build -t $DOCKER_USERNAME/$DOCKER_REPO:latest .
+    - docker tag $DOCKER_USERNAME/$DOCKER_REPO:latest $DOCKER_USERNAME/$DOCKER_REPO:$CI_COMMIT_SHA
+    - docker push $DOCKER_USERNAME/$DOCKER_REPO:latest
+    - docker push $DOCKER_USERNAME/$DOCKER_REPO:$CI_COMMIT_SHA
+  only:
+    - main

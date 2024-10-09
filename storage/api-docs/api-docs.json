@@ -1,0 +1,364 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Localstack UI API",
+        "description": "API documentation for Localstack UI",
+        "contact": {
+            "email": "diegoarmando2011@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/queues": {
+            "get": {
+                "tags": [
+                    "Queues"
+                ],
+                "summary": "List all queues",
+                "operationId": "86c521a1a78249beca75a0006a061f1b",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Queues"
+                ],
+                "summary": "Create a new queue",
+                "operationId": "3178d8dcbc238cbcb2959f2ae2fa813b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Queue created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Queues"
+                ],
+                "summary": "Delete a queue",
+                "operationId": "bbb04e7d4ca149296c7bd710965be6fb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "queue"
+                                ],
+                                "properties": {
+                                    "queue": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Queue deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/queues/{queue}": {
+            "get": {
+                "tags": [
+                    "Queues"
+                ],
+                "summary": "Get queue attributes",
+                "operationId": "da398291034e4b3881da4b1638d8105a",
+                "parameters": [
+                    {
+                        "name": "queue",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/api/queues/purge": {
+            "post": {
+                "tags": [
+                    "Queues"
+                ],
+                "summary": "Purge a queue",
+                "operationId": "82cae407412e9e4e80435c22d3b8ed6e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "queue"
+                                ],
+                                "properties": {
+                                    "queue": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Queue purged successfully"
+                    }
+                }
+            }
+        },
+        "/api/subscriptions": {
+            "get": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "List all subscriptions",
+                "operationId": "67df8b16e2d36e7aab97ce19a17f9355",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Create a new subscription",
+                "operationId": "a71648bdc4f0b03d53530ab22adf00cd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "topic",
+                                    "queue"
+                                ],
+                                "properties": {
+                                    "topic": {
+                                        "type": "string"
+                                    },
+                                    "queue": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Subscription created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/subscriptions/{topic}": {
+            "get": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "List subscriptions by topic",
+                "operationId": "3280a928b93d44b6df17718c361070e7",
+                "parameters": [
+                    {
+                        "name": "topic",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/topics": {
+            "get": {
+                "tags": [
+                    "Topics"
+                ],
+                "summary": "List all topics",
+                "operationId": "8e16748db53ac966e8af74d772501056",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Topics"
+                ],
+                "summary": "Create a new topic",
+                "operationId": "fead0ba561f17de0c4c6bccc6f8605e0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Topic created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Topics"
+                ],
+                "summary": "Delete a topic",
+                "operationId": "65469f7d4f661344850bb8bda478d210",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "topic"
+                                ],
+                                "properties": {
+                                    "topic": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Topic deleted successfully"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Queues",
+            "description": "Queues"
+        },
+        {
+            "name": "Subscriptions",
+            "description": "Subscriptions"
+        },
+        {
+            "name": "Topics",
+            "description": "Topics"
+        }
+    ]
+}

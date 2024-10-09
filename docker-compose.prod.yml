@@ -1,0 +1,9 @@
+services:
+  localstack-ui:
+    container_name: localstack-ui
+    image: localstackui/localstackui
+    ports:
+      - "8080:80"
+    environment:
+      - LOCALSTACK_HOST=http://localstack:4566
+    network_mode: host
