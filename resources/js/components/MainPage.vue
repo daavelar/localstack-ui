@@ -228,7 +228,11 @@ const openMessageModal = (arn) => {
 };
 
 const handleError = (errorMessage) => {
-    $toast.error(errorMessage, {position: 'top-right'});
+    if (typeof errorMessage === 'object') {
+        $toast.error('Erro ao realizar operação', {position: 'top-right'});
+    } else {
+        $toast.error(errorMessage, {position: 'top-right'});
+    }
 };
 
 const sendMessage = async () => {
@@ -339,15 +343,6 @@ const fetchQueueMessages = async (queue) => {
     try {
         const response = await axios.get(`/api/queues/${queue.name}/messages`);
         queueMessages.value = response.data;
-    } catch (error) {
-        handleError(error.response.data);
-    }
-};
-
-const addMessage = async (message) => {
-    try {
-        await axios.post(`/api/queues/${selectedQueue.value}/messages`, {content: message});
-        await fetchQueueMessages(selectedQueue.value);
     } catch (error) {
         handleError(error.response.data);
     }

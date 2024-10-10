@@ -1,12 +1,10 @@
 services:
   app:
+    container_name: localstack-ui
     build:
       context: .
-    container_name: localstack-ui
     ports:
       - "80:80"
-    volumes:
-      - mydb:/var/www/html/database/database.sqlite
 
   localstack:
     container_name: localstack
@@ -14,7 +12,3 @@ services:
     environment:
       - SERVICES=sns,sqs
       - DEBUG=1
-
-volumes:
-  mydb:
-    driver: local
