@@ -2,7 +2,8 @@ import {createApp} from 'vue';
 import App from './App.vue';
 import router from './router';
 import Echo from 'laravel-echo';
-
+import ToastPlugin from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 import Pusher from 'pusher-js';
 window.Pusher = Pusher;
 
@@ -17,5 +18,6 @@ window.Echo = new Echo({
 });
 
 const app = createApp(App);
+app.use(ToastPlugin);
 app.use(router);
 app.mount('#app');

@@ -24,9 +24,8 @@
                             <button @click="openMessageModal(topic.arn)"
                                     class="text-blue-400 hover:text-blue-300 transition-colors duration-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
-                                     fill="blue">
-                                    <path d="M4 4h16v16H4z" fill="none"/>
-                                    <path d="M20 4H4v16h16V4zm-2 2v.01L12 11 6 6.01V6h12zM6 18V8l6 5 6-5v10H6z"/>
+                                     fill="currentColor">
+                                    <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
                                 </svg>
                             </button>
                             <button @click="removeTopic(topic.arn)"
@@ -45,20 +44,21 @@
                     <div class="flex space-x-2">
                         <input v-model="newTopicName" type="text" placeholder="Enter topic name"
                                class="flex-grow px-2 py-1.5 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"/>
-                        <button @click="addTopic(newTopicName)"
+                        <button @click="createTopic(newTopicName)"
                                 class="px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-500 transition-colors duration-200 text-sm">
                             Add Topic
                         </button>
                     </div>
                 </div>
                 <div v-if="showMessageModal"
+                     @keydown.esc="closeMessageModal"
                      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-                        <h3 class="text-lg font-semibold mb-3 text-purple-400">
-                            Send Message to {{ currentTopicArn }}
+                    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-1/2 max-w-3xl h-2/3 flex flex-col">
+                        <h3 class="text-sm font-semibold mb-3 text-purple-400">
+                            Send Message to <span class="text-white">{{ currentTopicArn.split(':').pop() }}</span>
                         </h3>
-                        <textarea v-model="messageContent" rows="4"
-                                  class="w-full p-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        <textarea v-model="messageContent"
+                                  class="w-full p-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow"></textarea>
                         <div class="flex justify-end space-x-2 mt-4">
                             <button @click="sendMessage"
                                     class="px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-500 transition-colors duration-200">
@@ -113,7 +113,7 @@
                     <div class="flex space-x-2">
                         <input v-model="newQueueName" type="text" placeholder="Enter queue name"
                                class="flex-grow px-2 py-1.5 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"/>
-                        <button @click="addQueue(newQueueName)"
+                        <button @click="createQueue(newQueueName)"
                                 class="px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-500 transition-colors duration-200 text-sm">
                             Add Queue
                         </button>
@@ -150,7 +150,10 @@
 
             <div v-if="currentTab === 'Subscriptions'">
                 <h2 class="text-xl font-semibold mb-4 text-green-400">Subscriptions</h2>
-                <ul class="space-y-2">
+                <div v-if="!subscriptions.length" class="bg-amber-900 p-4 rounded-lg shadow-md">
+                    <p class="text-gray-400">No subscriptions found</p>
+                </div>
+                <ul v-else class="space-y-2">
                     <li v-for="subscription in subscriptions" :key="subscription.SubscriptionId"
                         class="flex justify-between items-center bg-gray-800 p-2 rounded-lg shadow-md">
                         <span class="text-white flex items-center space-x-2">
@@ -201,10 +204,11 @@
 <script setup>
 import {ref, onMounted, watch} from 'vue';
 import axios from 'axios';
+import {useToast} from "vue-toast-notification";
 
 const tabs = ['Topics', 'Queues', 'Subscriptions'];
 const currentTab = ref(localStorage.getItem('currentTab') || 'Topics');
-
+const $toast = useToast();
 const topics = ref([]);
 const queues = ref([]);
 const subscriptions = ref([]);
@@ -213,7 +217,6 @@ const queueMessages = ref([]);
 const showMessageModal = ref(false);
 const currentTopicArn = ref('');
 const messageContent = ref('');
-
 const newTopicName = ref('');
 const newQueueName = ref('');
 const newSubscriptionQueue = ref('');
@@ -224,6 +227,10 @@ const openMessageModal = (arn) => {
     showMessageModal.value = true;
 };
 
+const handleError = (errorMessage) => {
+    $toast.error(errorMessage, {position: 'top-right'});
+};
+
 const sendMessage = async () => {
     try {
         await axios.post('/api/messages/send', {
@@ -232,7 +239,7 @@ const sendMessage = async () => {
         });
         closeMessageModal();
     } catch (error) {
-        console.error('Error sending message:', error);
+        handleError('Error sending message:' + error.response.data);
     }
 };
 
@@ -255,7 +262,7 @@ const fetchTopics = async () => {
         const response = await axios.get('/api/topics');
         topics.value = response.data;
     } catch (error) {
-        console.error('Error fetching topics:', error);
+        handleError('Error fetching topics:' + error.response.data);
     }
 };
 
@@ -268,7 +275,7 @@ const fetchQueues = async () => {
             arn: queue.arn
         }));
     } catch (error) {
-        console.error('Error fetching queues:', error);
+        handleError('Error fetching queues:' + error.response.data);
     }
 };
 
@@ -277,26 +284,27 @@ const fetchSubscriptions = async () => {
         const response = await axios.get('/api/subscriptions');
         subscriptions.value = response.data;
     } catch (error) {
-        console.error('Error fetching subscriptions:', error);
+        handleError('Error fetching subscriptions:' + error.response.data);
     }
 };
 
-const addTopic = async (name) => {
+const createTopic = async (name) => {
     try {
         await axios.post('/api/topics', {name});
         await fetchTopics();
         newTopicName.value = '';
     } catch (error) {
-        console.error('Error adding topic:', error);
+        handleError('Error adding topic:' + error.response.data);
     }
 };
 
-const addQueue = async (name) => {
+const createQueue = async (name) => {
     try {
         await axios.post('/api/queues', {name});
         await fetchQueues();
+        newQueueName.value = '';
     } catch (error) {
-        console.error('Error adding queue:', error);
+        handleError('Error adding queue:' + error.response.data);
     }
 };
 
@@ -309,7 +317,7 @@ const removeQueue = async (queueUrl) => {
             queueMessages.value = [];
         }
     } catch (error) {
-        console.error('Error removing queue:', error);
+        handleError('Error removing queue:' + error.response.data);
     }
 };
 
@@ -318,7 +326,8 @@ const removeTopic = async (name) => {
         await axios.delete(`/api/topics/${name.split(':').pop()}`);
         await fetchTopics();
     } catch (error) {
-        console.error('Error removing topic:', error);
+        console.log(error.response.data);
+        handleError('Error removing topic:' + error.response.data);
     }
 };
 
@@ -332,7 +341,7 @@ const fetchQueueMessages = async (queue) => {
         const response = await axios.get(`/api/queues/${queue.name}/messages`);
         queueMessages.value = response.data;
     } catch (error) {
-        console.error('Error fetching queue messages:', error);
+        handleError('Error fetching queue messages:' + error.response.data);
     }
 };
 
@@ -341,7 +350,7 @@ const addMessage = async (message) => {
         await axios.post(`/api/queues/${selectedQueue.value}/messages`, {content: message});
         await fetchQueueMessages(selectedQueue.value);
     } catch (error) {
-        console.error('Error adding message:', error);
+        handleError('Error adding message:' + error.response.data);
     }
 };
 
@@ -351,7 +360,7 @@ const removeMessage = async (index) => {
         await axios.delete(`/api/messages/${messageId}`);
         await fetchQueueMessages(selectedQueue.value);
     } catch (error) {
-        console.error('Error removing message:', error);
+        handleError('Error removing message:' + error.response.data);
     }
 };
 
@@ -365,7 +374,7 @@ const createSubscription = async (subscription) => {
         newSubscriptionQueue.value = '';
         newSubscriptionTopic.value = '';
     } catch (error) {
-        console.error('Error adding subscription:', error);
+        handleError('Error adding subscription:' + error.response.data);
     }
 };
 
@@ -375,7 +384,7 @@ const deleteSubscription = async (subscription) => {
 
         await fetchSubscriptions();
     } catch (error) {
-        console.error('Error deleting subscription:', error);
+        handleError('Error deleting subscription:' + error.response.data);
     }
 };
 
@@ -417,110 +426,5 @@ body {
 
 .font-quicksand {
     font-family: 'Quicksand', sans-serif;
-}
-
-.fixed {
-    position: fixed;
-}
-
-.inset-0 {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-
-.bg-black {
-    background-color: black;
-}
-
-.bg-opacity-50 {
-    background-opacity: 0.5;
-}
-
-.flex {
-    display: flex;
-}
-
-.items-center {
-    align-items: center;
-}
-
-.justify-center {
-    justify-content: center;
-}
-
-.bg-gray-800 {
-    background-color: #2d3748;
-}
-
-.p-6 {
-    padding: 1.5rem;
-}
-
-.rounded-lg {
-    border-radius: 0.5rem;
-}
-
-.shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-.w-full {
-    width: 100%;
-}
-
-.p-2 {
-    padding: 0.5rem;
-}
-
-.bg-gray-700 {
-    background-color: #4a5568;
-}
-
-.text-white {
-    color: white;
-}
-
-.rounded-md {
-    border-radius: 0.375rem;
-}
-
-.focus\:outline-none {
-    outline: 0;
-}
-
-.focus\:ring-2 {
-    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
-}
-
-.focus\:ring-blue-500 {
-    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
-}
-
-.mt-4 {
-    margin-top: 1rem;
-}
-
-.space-x-2 > :not([hidden]) ~ :not([hidden]) {
-    --space-x-reverse: 0;
-    margin-right: calc(0.5rem * var(--space-x-reverse));
-    margin-left: calc(0.5rem * calc(1 - var(--space-x-reverse)));
-}
-
-.bg-green-600 {
-    background-color: #38a169;
-}
-
-.hover\:bg-green-500:hover {
-    background-color: #48bb78;
-}
-
-.bg-red-600 {
-    background-color: #e53e3e;
-}
-
-.hover\:bg-red-500:hover {
-    background-color: #f56565;
 }
 </style>

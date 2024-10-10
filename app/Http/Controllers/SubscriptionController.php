@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SubscriptionDeleted;
 use App\Http\Requests\CreateSubscriptionRequest;
 use App\Http\Requests\DeleteSubscriptionRequest;
-use App\Http\Requests\SubscriptionRequest;
 use Aws\Arn\Arn;
 use Aws\Arn\ArnParser;
 use Aws\Sns\Exception\SnsException;
 use Aws\Sns\SnsClient;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class SubscriptionController extends Controller
@@ -222,12 +221,16 @@ class SubscriptionController extends Controller
      */
     public function destroy(DeleteSubscriptionRequest $request)
     {
+        $arn = 'arn:aws:sns:us-east-1:000000000000:' . $request->get('topic') . ':' . $request->get('arn_resource');
+
         try {
             $this->sns->unsubscribe([
-                'SubscriptionArn' => $arn = 'arn:aws:sns:us-east-1:000000000000:' . $request->get('queue') . ':' . $request->get('arn_resource'),
+                'SubscriptionArn' => $arn,
             ]);
 
-            return response()->json(['message' => 'Subscription deleted successfully ' . $arn]);
+            event(new SubscriptionDeleted());
+
+            return response()->json(['message' => 'Subscription deleted successfully ']);
         } catch (SnsException $e) {
             if ($e->getAwsErrorCode() === 'NotFound') {
                 return response()->json(['error' => 'Subscription not found'], 404);
