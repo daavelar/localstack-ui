@@ -134,8 +134,6 @@ class TopicController extends Controller
      */
     public function destroy($name)
     {
-        return response()->json('Topic deleted successfully', Response::HTTP_INTERNAL_SERVER_ERROR);
-
         $this->sns->deleteTopic(['TopicArn' => 'arn:aws:sns:us-east-1:000000000000:' . $name]);
 
         return response()->noContent();

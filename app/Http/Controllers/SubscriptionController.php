@@ -73,7 +73,7 @@ class SubscriptionController extends Controller
 
             return response()->json($formattedSubscriptions);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([$e->getMessage()], 500);
         }
     }
 
@@ -174,7 +174,7 @@ class SubscriptionController extends Controller
 
             foreach ($existingSubscriptions['Subscriptions'] as $subscription) {
                 if ($subscription['Protocol'] === 'sqs' && $subscription['Endpoint'] === $request->input('queue')) {
-                    return response()->json(['error' => 'Subscription already exists'], Response::HTTP_BAD_REQUEST);
+                    return response()->json(['Subscription already exists'], Response::HTTP_BAD_REQUEST);
                 }
             }
 
@@ -186,7 +186,7 @@ class SubscriptionController extends Controller
 
             return response()->json(['message' => 'Subscription created successfully', Response::HTTP_CREATED]);
         } catch (SnsException $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([$e->getMessage()], 500);
         }
     }
 
@@ -233,11 +233,11 @@ class SubscriptionController extends Controller
             return response()->json(['message' => 'Subscription deleted successfully ']);
         } catch (SnsException $e) {
             if ($e->getAwsErrorCode() === 'NotFound') {
-                return response()->json(['error' => 'Subscription not found'], 404);
+                return response()->json(['Subscription not found'], 404);
             }
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([$e->getMessage()], 500);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([$e->getMessage()], 500);
         }
     }
 }

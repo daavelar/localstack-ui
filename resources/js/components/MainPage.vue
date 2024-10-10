@@ -239,7 +239,7 @@ const sendMessage = async () => {
         });
         closeMessageModal();
     } catch (error) {
-        handleError('Error sending message:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -262,7 +262,7 @@ const fetchTopics = async () => {
         const response = await axios.get('/api/topics');
         topics.value = response.data;
     } catch (error) {
-        handleError('Error fetching topics:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -275,7 +275,7 @@ const fetchQueues = async () => {
             arn: queue.arn
         }));
     } catch (error) {
-        handleError('Error fetching queues:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -284,7 +284,7 @@ const fetchSubscriptions = async () => {
         const response = await axios.get('/api/subscriptions');
         subscriptions.value = response.data;
     } catch (error) {
-        handleError('Error fetching subscriptions:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -294,7 +294,7 @@ const createTopic = async (name) => {
         await fetchTopics();
         newTopicName.value = '';
     } catch (error) {
-        handleError('Error adding topic:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -304,7 +304,7 @@ const createQueue = async (name) => {
         await fetchQueues();
         newQueueName.value = '';
     } catch (error) {
-        handleError('Error adding queue:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -317,7 +317,7 @@ const removeQueue = async (queueUrl) => {
             queueMessages.value = [];
         }
     } catch (error) {
-        handleError('Error removing queue:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -326,8 +326,7 @@ const removeTopic = async (name) => {
         await axios.delete(`/api/topics/${name.split(':').pop()}`);
         await fetchTopics();
     } catch (error) {
-        console.log(error.response.data);
-        handleError('Error removing topic:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -341,7 +340,7 @@ const fetchQueueMessages = async (queue) => {
         const response = await axios.get(`/api/queues/${queue.name}/messages`);
         queueMessages.value = response.data;
     } catch (error) {
-        handleError('Error fetching queue messages:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -350,7 +349,7 @@ const addMessage = async (message) => {
         await axios.post(`/api/queues/${selectedQueue.value}/messages`, {content: message});
         await fetchQueueMessages(selectedQueue.value);
     } catch (error) {
-        handleError('Error adding message:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -360,7 +359,7 @@ const removeMessage = async (index) => {
         await axios.delete(`/api/messages/${messageId}`);
         await fetchQueueMessages(selectedQueue.value);
     } catch (error) {
-        handleError('Error removing message:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -374,7 +373,7 @@ const createSubscription = async (subscription) => {
         newSubscriptionQueue.value = '';
         newSubscriptionTopic.value = '';
     } catch (error) {
-        handleError('Error adding subscription:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
@@ -384,7 +383,7 @@ const deleteSubscription = async (subscription) => {
 
         await fetchSubscriptions();
     } catch (error) {
-        handleError('Error deleting subscription:' + error.response.data);
+        handleError(error.response.data);
     }
 };
 
