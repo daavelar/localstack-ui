@@ -16,6 +16,7 @@ Route::post('queues/purge', [QueueController::class, 'purge']);
 Route::get('queues/{queue}/messages', [QueueController::class, 'messages']);
 
 Route::delete('messages/{id}', [MessageController::class, 'destroy']);
+Route::post('messages/send', [MessageController::class, 'sendMessage']);
 
 Route::get('topics', [TopicController::class, 'index']);
 Route::post('topics', [TopicController::class, 'store']);

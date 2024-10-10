@@ -1,6 +1,0 @@
-[ok] Exibir as mensagens de todos os tópicos
-[] Implementar websocket para criações externas de filas/tópicos, serem refletidas automaticamente
-[] Chamar de SNS, SQS ao invés de Topics e Queues
-[] Ao remover uma fila
-[] Ao deletar uma fila, reiniciar o comando de consumo
-[] implementar tooltips em caso de erro

@@ -20,14 +20,24 @@
                     <li v-for="topic in topics" :key="topic.arn"
                         class="flex justify-between items-center bg-gray-800 p-2 rounded-lg shadow-md">
                         <span class="text-white">{{ topic.arn }}</span>
-                        <button @click="removeTopic(topic.arn)"
-                                class="text-red-400 hover:text-red-300 transition-colors duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
-                                 fill="red">
-                                <path
-                                    d="M3 6h18v2H3V6zm2 3h14v13H5V9zm3 2v9h2v-9H8zm4 0v9h2v-9h-2zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
-                            </svg>
-                        </button>
+                        <div class="flex items-center space-x-2">
+                            <button @click="openMessageModal(topic.arn)"
+                                    class="text-blue-400 hover:text-blue-300 transition-colors duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                     fill="blue">
+                                    <path d="M4 4h16v16H4z" fill="none"/>
+                                    <path d="M20 4H4v16h16V4zm-2 2v.01L12 11 6 6.01V6h12zM6 18V8l6 5 6-5v10H6z"/>
+                                </svg>
+                            </button>
+                            <button @click="removeTopic(topic.arn)"
+                                    class="text-red-400 hover:text-red-300 transition-colors duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                     fill="red">
+                                    <path
+                                        d="M3 6h18v2H3V6zm2 3h14v13H5V9zm3 2v9h2v-9H8zm4 0v9h2v-9h-2zm4 0v9h2v-9h-2zM9 4V2h6v2h5v2H4V4h5z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </li>
                 </ul>
                 <div class="bg-gray-800 p-4 rounded-lg shadow-md mt-4">
@@ -39,6 +49,26 @@
                                 class="px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-500 transition-colors duration-200 text-sm">
                             Add Topic
                         </button>
+                    </div>
+                </div>
+                <div v-if="showMessageModal"
+                     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold mb-3 text-purple-400">
+                            Send Message to {{ currentTopicArn }}
+                        </h3>
+                        <textarea v-model="messageContent" rows="4"
+                                  class="w-full p-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        <div class="flex justify-end space-x-2 mt-4">
+                            <button @click="sendMessage"
+                                    class="px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-500 transition-colors duration-200">
+                                Send
+                            </button>
+                            <button @click="closeMessageModal"
+                                    class="px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-500 transition-colors duration-200">
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -180,11 +210,36 @@ const queues = ref([]);
 const subscriptions = ref([]);
 const selectedQueue = ref(null);
 const queueMessages = ref([]);
+const showMessageModal = ref(false);
+const currentTopicArn = ref('');
+const messageContent = ref('');
 
 const newTopicName = ref('');
 const newQueueName = ref('');
 const newSubscriptionQueue = ref('');
 const newSubscriptionTopic = ref('');
+
+const openMessageModal = (arn) => {
+    currentTopicArn.value = arn;
+    showMessageModal.value = true;
+};
+
+const sendMessage = async () => {
+    try {
+        await axios.post('/api/messages/send', {
+            arn: currentTopicArn.value,
+            message: messageContent.value
+        });
+        closeMessageModal();
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+};
+
+const closeMessageModal = () => {
+    showMessageModal.value = false;
+    messageContent.value = '';
+};
 
 const setCurrentTab = (tab) => {
     currentTab.value = tab;
@@ -362,5 +417,110 @@ body {
 
 .font-quicksand {
     font-family: 'Quicksand', sans-serif;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.inset-0 {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.bg-black {
+    background-color: black;
+}
+
+.bg-opacity-50 {
+    background-opacity: 0.5;
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.bg-gray-800 {
+    background-color: #2d3748;
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.w-full {
+    width: 100%;
+}
+
+.p-2 {
+    padding: 0.5rem;
+}
+
+.bg-gray-700 {
+    background-color: #4a5568;
+}
+
+.text-white {
+    color: white;
+}
+
+.rounded-md {
+    border-radius: 0.375rem;
+}
+
+.focus\:outline-none {
+    outline: 0;
+}
+
+.focus\:ring-2 {
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
+}
+
+.focus\:ring-blue-500 {
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.space-x-2 > :not([hidden]) ~ :not([hidden]) {
+    --space-x-reverse: 0;
+    margin-right: calc(0.5rem * var(--space-x-reverse));
+    margin-left: calc(0.5rem * calc(1 - var(--space-x-reverse)));
+}
+
+.bg-green-600 {
+    background-color: #38a169;
+}
+
+.hover\:bg-green-500:hover {
+    background-color: #48bb78;
+}
+
+.bg-red-600 {
+    background-color: #e53e3e;
+}
+
+.hover\:bg-red-500:hover {
+    background-color: #f56565;
 }
 </style>
