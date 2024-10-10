@@ -1,7 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
-# Executar migrações do Laravel
-php artisan migrate --force
+# Set permissions for the SQLite database file
+chown -R root:root /var/www/html/database
+chmod -R 777 /var/www/html/database
 
-# Iniciar supervisord
-/usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
+# Run migrations
+php /var/www/html/artisan migrate
+
+# Start supervisord
+exec supervisord -c /etc/supervisor/supervisord.conf

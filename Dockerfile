@@ -29,7 +29,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY . /var/www/html
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html \
+RUN chown -R root:root /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
 # Install project dependencies
@@ -41,6 +41,9 @@ RUN npm run build
 # Copy configurations
 COPY nginx.conf /etc/nginx/sites-available/default
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Create log directory and set permissions
+RUN mkdir -p /var/log/php-fpm && chown -R www-data:www-data /var/log/php-fpm
 
 # Copy startup script
 COPY start.sh /start.sh

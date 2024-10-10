@@ -6,4 +6,15 @@ services:
     ports:
       - "80:80"
     volumes:
-      - .:/var/www/html
+      - mydb:/var/www/html/database/database.sqlite
+
+  localstack:
+    container_name: localstack
+    image: localstack/localstack
+    environment:
+      - SERVICES=sns,sqs
+      - DEBUG=1
+
+volumes:
+  mydb:
+    driver: local

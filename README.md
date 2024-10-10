@@ -21,7 +21,7 @@ Localstack UI is a web application designed to provide a user-friendly interface
     Copy the `.env.example` to `.env` and adjust the configurations as needed.
 
     ```sh
-    cp .env.bkp.example .env.bkp
+    cp .env.docker.dev.example .env.docker.dev
     ```
 
 3. **Build and run the Docker containers:**
