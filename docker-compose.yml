@@ -1,34 +1,9 @@
 services:
-
-    redis:
-        container_name: redis
-        image: redis:alpine
-        network_mode: host
-
-    localstack:
-        container_name: localstack
-        image: localstack/localstack
-        network_mode: host
-        environment:
-            - SERVICES=sns,sqs
-            - DEBUG=1
-        volumes:
-            - localstack-vol:/var/lib/localstack
-
-    mysql:
-        container_name: mysql
-        image: mysql:8.0
-        environment:
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=localstackui
-            - MYSQL_USER=localstackui-api
-            - MYSQL_PASSWORD=localstack@123
-        volumes:
-            - mysql:/var/lib/mysql
-        network_mode: host
-
-volumes:
-    localstack-vol:
-        driver: local
-    mysql:
-        driver: local
+  app:
+    build:
+      context: .
+    container_name: localstack-ui
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
