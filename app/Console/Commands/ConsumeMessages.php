@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class ConsumeMessages extends Command
 {
-    protected $signature = 'messages:consume {--daemon}';
+    protected $signature = 'messages:consume';
     protected $description = 'Consume messages from all SQS queues and save them to the database';
 
     private $sqs;
@@ -21,11 +21,11 @@ class ConsumeMessages extends Command
 
         $this->sqs = new SqsClient([
             'version' => 'latest',
-            'region' => config('aws.region', 'us-east-1'),
-            'endpoint' => config('aws.endpoint', 'http://localhost:4566'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'endpoint' => env('AWS_ENDPOINT'),
             'credentials' => [
-                'key' => config('aws.key', 'test'),
-                'secret' => config('aws.secret', 'test'),
+                'key' => env('AWS_ACCESS_KEY_ID'),
+                'secret' => env('AWS_SECRET_ACCESS_KEY'),
             ],
         ]);
     }
@@ -36,17 +36,12 @@ class ConsumeMessages extends Command
 
         $queues = $this->listQueues();
 
-        if ($this->option('daemon')) {
-            $this->info("Running in daemon mode. Press Ctrl+C to stop.");
-            while (true) {
-                $this->processAllQueues($queues);
-                sleep(10); // Wait for 10 seconds before checking queues again
-            }
-        } else {
-            $this->processAllQueues($queues);
-        }
+        $this->info("Running in daemon mode. Press Ctrl+C to stop.");
 
-        $this->info("Finished processing all queues");
+        while (true) {
+            $this->processAllQueues($queues);
+            sleep(10);
+        }
     }
 
     private function processAllQueues($queues)

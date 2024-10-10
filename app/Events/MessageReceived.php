@@ -12,9 +12,11 @@ class MessageReceived implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct()
+    private mixed $messageId;
+
+    public function __construct($messageId)
     {
-        //
+        $this->messageId = $messageId;
     }
 
     public function broadcastOn(): array
