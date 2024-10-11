@@ -1,0 +1,15 @@
+services:
+    app:
+        container_name: localstack-ui
+        build:
+          context: .
+          dockerfile: full.Dockerfile
+        ports:
+            - "80:80"
+
+    localstack:
+        container_name: localstack
+        image: localstack/localstack
+        environment:
+            - SERVICES=sns,sqs
+            - DEBUG=1

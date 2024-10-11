@@ -20,7 +20,7 @@ return [
 
     'aws' => [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-        'id' => env('AWS_ACCESS_KEY_ID', 'localstack'),
+        'key' => env('AWS_ACCESS_KEY_ID', 'localstack'),
         'secret' => env('AWS_SECRET_ACCESS_KEY', 'localstack'),
         'endpoint' => env('AWS_ENDPOINT', 'http://localstack:4566'),
         'token' => env('AWS_SESSION_TOKEN', '123'),

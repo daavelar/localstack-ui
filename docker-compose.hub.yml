@@ -1,7 +1,7 @@
 services:
     app:
         container_name: localstack-ui
-        image: diegueradev/localstack-ui:1.0.1
+        image: diegueradev/localstack-ui:1.0.4
         ports:
             - "80:80"
 

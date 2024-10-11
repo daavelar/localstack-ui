@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Aws\Credentials\Credentials;
 use Aws\Sns\SnsClient;
 
 class SNS
@@ -11,12 +12,8 @@ class SNS
         return new SnsClient([
             'version' => 'latest',
             'region' => config('services.aws.region'),
-            'endpoint' => config('services.aws.sns_endpoint'),
-            'credentials' => [
-                'key' => config('services.aws.key'),
-                'secret' => config('services.aws.secret'),
-                'token' => config('services.aws.token'),
-            ],
+            'endpoint' => config('services.aws.endpoint'),
+            'credentials' => new Credentials(config('services.aws.key'), config('services.aws.secret'))
         ]);
     }
 }

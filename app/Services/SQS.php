@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Aws\Credentials\Credentials;
 use Aws\Sqs\SqsClient;
 
 class SQS
@@ -11,12 +12,8 @@ class SQS
         return new SqsClient([
             'version' => 'latest',
             'region' => config('services.aws.region'),
-            'endpoint' => config('services.aws.sqs_endpoint'),
-            'credentials' => [
-                'key' => config('services.aws.key'),
-                'secret' => config('services.aws.secret'),
-                'token' => config('services.aws.token'),
-            ],
+            'endpoint' => config('services.aws.endpoint'),
+            'credentials' => new Credentials(config('services.aws.key'), config('services.aws.secret'))
         ]);
     }
 

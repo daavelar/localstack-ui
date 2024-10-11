@@ -19,7 +19,10 @@
                 <ul v-else class="space-y-2">
                     <li v-for="topic in topics" :key="topic.arn"
                         class="flex justify-between items-center bg-gray-800 p-2 rounded-lg shadow-md">
-                        <span class="text-white">{{ topic.arn }}</span>
+                        <div class="flex items-center">
+                            <span class="text-xs text-gray-500 mr-1">name:</span>
+                            <span class="text-white">{{ topic.arn }}</span>
+                        </div>
                         <div class="flex items-center space-x-2">
                             <button @click="openMessageModal(topic.arn)"
                                     class="text-blue-400 hover:text-blue-300 transition-colors duration-200">
@@ -179,15 +182,15 @@
                 <div class="bg-gray-800 p-4 rounded-lg shadow-md mt-4">
                     <h3 class="text-lg font-semibold mb-3 text-purple-400">Create New Subscription</h3>
                     <div class="flex space-x-2">
-                        <select v-model="newSubscriptionQueue"
-                                class="flex-grow px-2 py-1.5 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
-                            <option value="">Choose a queue</option>
-                            <option v-for="queue in queues" :key="queue.arn" :value="queue">{{ queue.name }}</option>
-                        </select>
                         <select v-model="newSubscriptionTopic"
                                 class="flex-grow px-2 py-1.5 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                             <option value="">Choose a topic</option>
                             <option v-for="topic in topics" :key="topic.arn" :value="topic">{{ topic.name }}</option>
+                        </select>
+                        <select v-model="newSubscriptionQueue"
+                                class="flex-grow px-2 py-1.5 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                            <option value="">Choose a queue</option>
+                            <option v-for="queue in queues" :key="queue.arn" :value="queue">{{ queue.name }}</option>
                         </select>
                         <button
                             @click="createSubscription({ queue: newSubscriptionQueue, topic: newSubscriptionTopic })"

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\SNS;
 use Illuminate\Console\Command;
 use Aws\Sns\SnsClient;
 use Illuminate\Support\Str;
@@ -17,15 +18,7 @@ class ProduceMessages extends Command
     {
         parent::__construct();
 
-        $this->sns = new SnsClient([
-            'version' => 'latest',
-            'region' => env('AWS_DEFAULT_REGION'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'credentials' => [
-                'key' => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            ],
-        ]);
+        $this->sns = SNS::getClient();
     }
 
     public function handle()
