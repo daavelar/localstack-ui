@@ -6,6 +6,7 @@ touch /var/www/html/database/database.sqlite
 # Set permissions for the SQLite database file
 chown -R root:root /var/www/html/database
 chmod -R 777 /var/www/html/database
+chmod -R 777 /var/www/html/storage
 
 # Run migrations
 php /var/www/html/artisan migrate

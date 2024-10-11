@@ -1,11 +1,17 @@
 # Localstack UI
 
-Localstack UI is a web application designed to provide a user-friendly interface for managing and interacting with Localstack services. This project integrates various components such as a frontend, API, Laravel Reverb, Redis, MySQL, and Horizon.
+Localstack UI is a web application designed to provide a user-friendly interface 
+for managing and interacting with Localstack services. 
+This project integrates various components such as a frontend, API, Laravel Reverb,
+Redis, MySQL, and Horizon.
 
 ## Prerequisites
 
 - Docker
 - Docker Compose
+- PHP >= 8.2
+- SQLite
+- PHP SQLite extension
 
 ## Installation
 
@@ -16,15 +22,7 @@ Localstack UI is a web application designed to provide a user-friendly interface
     cd localstack-ui
     ```
 
-2. **Set up environment variables:**
-
-    Copy the `.env.example` to `.env` and adjust the configurations as needed.
-
-    ```sh
-    cp .env.docker.dev.example .env.docker.dev
-    ```
-
-3. **Build and run the Docker containers:**
+2. **Build and run the Docker containers:**
 
     ```sh
     docker-compose up --build
@@ -46,46 +44,3 @@ REDIS_HOST=0.0.0.0
 REDIS_PORT=6379
 
 AWS_ENDPOINT=http://0.0.0.0:4566
-```
-
-## Usage
-
-Once the containers are up and running, you can access the application at `http://localhost`. The Localstack services will be available at `http://localhost:4566`.
-
-## Development
-
-### Frontend
-
-Navigate to the `frontend` directory and install the dependencies:
-
-```sh
-cd frontend
-npm install
-npm run dev
-```
-
-### Backend
-
-Install the PHP dependencies using Composer:
-
-```sh
-composer install
-```
-
-Run the Laravel development server:
-
-```sh
-php artisan serve
-```
-
-## Deployment
-
-This project uses GitLab CI for continuous integration and deployment. The `.gitlab-ci.yml` file is configured to build and push the Docker image to Docker Hub.
-
-## Contributing
-
-Feel free to submit issues or pull requests. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
