@@ -17,17 +17,15 @@ class ProduceMessages extends Command
     {
         parent::__construct();
 
-        $awsConfig = [
+        $this->sns = new SnsClient([
             'version' => 'latest',
-            'region'  => config('aws.region', 'us-east-1'),
-            'endpoint' => config('aws.endpoint', 'http://localhost:4566'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'endpoint' => env('AWS_ENDPOINT'),
             'credentials' => [
-                'key'    => config('aws.key', 'test'),
-                'secret' => config('aws.secret', 'test'),
+                'key' => env('AWS_ACCESS_KEY_ID'),
+                'secret' => env('AWS_SECRET_ACCESS_KEY'),
             ],
-        ];
-
-        $this->sns = new SnsClient($awsConfig);
+        ]);
     }
 
     public function handle()
