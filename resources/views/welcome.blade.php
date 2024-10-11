@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Aws UI</title>
+    <title>Localstack UI</title>
     @vite(['resources/js/app.js', 'resources/css/app.css'])
 </head>
 <body>
