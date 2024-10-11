@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\SubscriptionDeleted;
 use App\Http\Requests\CreateSubscriptionRequest;
 use App\Http\Requests\DeleteSubscriptionRequest;
+use App\Services\SNS;
 use Aws\Arn\Arn;
 use Aws\Arn\ArnParser;
 use Aws\Sns\Exception\SnsException;
@@ -17,15 +18,7 @@ class SubscriptionController extends Controller
 
     public function __construct()
     {
-        $this->sns = new SnsClient([
-            'version' => 'latest',
-            'region' => env('AWS_DEFAULT_REGION'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'credentials' => [
-                'key' => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            ],
-        ]);
+        $this->sns = SNS::getClient();
     }
 
     /**

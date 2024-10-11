@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
-use Aws\Sns\SnsClient;
-use Aws\Sqs\SqsClient;
+use App\Services\SNS;
+use App\Services\SQS;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -13,15 +13,7 @@ class MessageController extends Controller
 
     public function __construct()
     {
-        $this->sqs = new SqsClient([
-            'version' => 'latest',
-            'region' => env('AWS_DEFAULT_REGION'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'credentials' => [
-                'key' => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            ],
-        ]);
+        $this->sqs = SQS::getClient();
     }
 
     public function sendMessage(Request $request)
@@ -31,16 +23,7 @@ class MessageController extends Controller
             'message' => 'required|string',
         ]);
 
-        $sns = new SnsClient([
-            'version' => 'latest',
-            'region' => env('AWS_DEFAULT_REGION'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'credentials' => [
-                'key' => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-                'token' => env('AWS_SESSION_TOKEN'),
-            ],
-        ]);
+        $sns = SNS::getClient();
 
         try {
             $result = $sns->publish([

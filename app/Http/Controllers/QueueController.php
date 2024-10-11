@@ -8,7 +8,7 @@ use App\Http\Requests\CreateQueueRequest;
 use App\Http\Requests\DestroyQueueRequest;
 use App\Http\Requests\PurgeQueueRequest;
 use App\Models\Message;
-use Aws\Sqs\SqsClient;
+use App\Services\SQS;
 use Illuminate\Http\JsonResponse;
 
 class QueueController extends Controller
@@ -17,15 +17,7 @@ class QueueController extends Controller
 
     public function __construct()
     {
-        $this->sqs = new SqsClient([
-            'version' => 'latest',
-            'region' => env('AWS_DEFAULT_REGION'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'credentials' => [
-                'key' => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            ],
-        ]);
+        $this->sqs = SQS::getClient();
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\MessageReceived;
+use App\Services\SQS;
 use Illuminate\Console\Command;
 use Aws\Sqs\SqsClient;
 use App\Models\Message;
@@ -19,15 +20,7 @@ class ConsumeMessages extends Command
     {
         parent::__construct();
 
-        $this->sqs = new SqsClient([
-            'version' => 'latest',
-            'region' => env('AWS_DEFAULT_REGION'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'credentials' => [
-                'key' => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            ],
-        ]);
+        $this->sqs = SQS::getClient();
     }
 
     public function handle()
