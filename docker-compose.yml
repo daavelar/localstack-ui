@@ -1,14 +1,13 @@
 services:
-  app:
-    container_name: localstack-ui
-    build:
-      context: .
-    ports:
-      - "80:80"
+    app:
+        container_name: localstack-ui
+        image: diegueradev/localstack-ui:latest
+        ports:
+            - "80:80"
 
-  localstack:
-    container_name: localstack
-    image: localstack/localstack
-    environment:
-      - SERVICES=sns,sqs
-      - DEBUG=1
+    localstack:
+        container_name: localstack
+        image: localstack/localstack
+        environment:
+            - SERVICES=sns,sqs
+            - DEBUG=1
