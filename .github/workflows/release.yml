@@ -21,17 +21,18 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install semantic-release
-        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github @semantic-release/exec
-
       - name: Run semantic-release
         id: semantic-release
+        uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          semantic-release
+        with:
+          extra_plugins: |
+            @semantic-release/exec
+        outputs:
+          nextRelease: ${{ steps.semantic-release.outputs.nextRelease }}
 
       - name: Log in to Docker Hub
         if: success()
@@ -49,4 +50,4 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/localstack-ui:latest
-            ${{ secrets.DOCKER_USERNAME }}/localstack-ui:${{ steps.semantic-release.outputs.nextRelease.version }}
+            ${{ secrets.DOCKER_USERNAME }}/localstack-ui:${{ steps.semantic-release.outputs.nextRelease }}
