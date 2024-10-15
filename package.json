@@ -1,4 +1,5 @@
 {
+    "name": "localstack-ui",
     "private": true,
     "version": "1.0.10",
     "type": "module",
