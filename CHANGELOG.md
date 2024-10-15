@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -30,3 +31,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - N/A
+=======
+# 1.0.0 (2024-10-15)
+
+
+### Features
+
+* updating supervisor ([254c49f](https://github.com/daavelar/localstack-ui/commit/254c49fa321b22c4791ebbf77c4a84226a5837fa))
+>>>>>>> 45b5f4f3618d1ec3cc2bb0d30cffcac52c377ede
