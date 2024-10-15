@@ -53,6 +53,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          dockerfile: full.Dockerfile
           push: true
           tags: |
             diegueradev/localstack-ui:latest
