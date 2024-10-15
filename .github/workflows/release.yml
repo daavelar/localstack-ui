@@ -17,10 +17,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: '20'
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install semantic-release plugins
+        run: npm install --save-dev @semantic-release/changelog @semantic-release/git
 
       - name: Release
         env:
@@ -46,5 +49,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/my-image:latest
-            ${{ secrets.DOCKER_USERNAME }}/my-image:${{ steps.get-version.outputs.VERSION }}
+            diegueradev/localstack-ui:latest
+            diegueradev/localstack-ui:${{ steps.get-version.outputs.VERSION }}
