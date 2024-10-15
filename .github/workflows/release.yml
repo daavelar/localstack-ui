@@ -30,6 +30,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          file: full.Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/localstack-ui:${{ env.VERSION }}
